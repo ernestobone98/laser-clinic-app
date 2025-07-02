@@ -1,5 +1,5 @@
 // src/components/procedures/ProcedureForm.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Modal } from '../common/Modal';
 
 export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loadingZonas }) => {
@@ -37,28 +37,35 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
     }
   }, [patient]);
   // Get initial search terms based on procedure data
-  const getInitialSearchTerms = () => {
+  const getInitialSearchTerms = useCallback(() => {
     // If no procedure or zones, return default empty term
     if (!procedura?.zonas?.length) return [''];
-    
+
     return procedura.zonas.map(zona => {
       // Handle both id_zona and idZona cases
       const zoneId = zona.id_zona || zona.idZona;
       if (!zoneId) return '';
-      
+
       // Find the matching zone, handling case sensitivity
       const fullZoneData = zonas?.find(z => 
         z.id_zona === zoneId || 
         z.idZona === zoneId
       );
-      
+
       // Try both cases for the name
       return fullZoneData?.NAZVANIE || fullZoneData?.nazvanie || '';
     });
-  };
+  }, [procedura, zonas]);
 
   const [searchTerms, setSearchTerms] = useState(getInitialSearchTerms());
-  const [showDropdowns, setShowDropdowns] = useState(procedura?.zonas?.map(() => false) || [false]);
+  const [showDropdowns, setShowDropdowns] = useState(
+    procedura?.zonas?.map(() => false) || [false]
+  );
+
+  // Recalculate search terms when procedure or zones change
+  useEffect(() => {
+    setSearchTerms(getInitialSearchTerms());
+  }, [getInitialSearchTerms]);
 
   // Filter zones based on search term and patient's gender for a specific dropdown
   const getFilteredZonas = (currentSearchTerm) => {
