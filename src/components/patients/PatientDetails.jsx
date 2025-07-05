@@ -7,6 +7,7 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
   const [procedures, setProcedures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchProcedures = useCallback(async () => {
     if (!patient?.id) return;
@@ -26,6 +27,12 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
   useEffect(() => {
     fetchProcedures();
   }, [fetchProcedures, onDataChange]);
+
+  const filteredProcedures = procedures.filter(proc =>
+    proc.zonas.some(z =>
+      z.zona.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
   return (
     <div className="animate-slide-in-right">
@@ -57,16 +64,24 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
             Нова процедура
           </button>
         </div>
-        {console.log("Procedures:", procedures)}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Търсене по зона..."
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         {loading ? (
           <p>Зареждане на процедури...</p>
         ) : error ? (
           <p className="text-red-500">Грешка при зареждане: {error}</p>
-        ) : procedures.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">Няма регистрирани процедури за този пациент.</p>
+        ) : filteredProcedures.length === 0 ? (
+          <p className="text-center text-gray-500 py-8">{searchTerm ? 'Няма намерени процедури за това търсене.' : 'Няма регистрирани процедури за този пациент.'}</p>
         ) : (
           <ul className="space-y-4">
-            {procedures.map(proc => (
+            {filteredProcedures.map(proc => (
               <li key={proc.idProcedura} className="bg-gray-50 rounded-lg p-4 flex flex-col md:flex-row justify-between md:items-center">
                 <div>
                   <p className="font-bold text-gray-700 flex items-center gap-2"><Calendar size={16} /> {new Date(proc.data).toLocaleDateString()}</p>
