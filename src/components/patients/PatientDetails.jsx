@@ -28,11 +28,19 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
     fetchProcedures();
   }, [fetchProcedures, onDataChange]);
 
-  const filteredProcedures = procedures.filter(proc =>
-    proc.zonas.some(z =>
-      z.zona.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  const filteredProcedures = procedures
+    .map(proc => {
+      if (!searchTerm) return proc;
+      
+      const matchingZones = proc.zonas.filter(z => 
+        z.zona.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      return matchingZones.length > 0 
+        ? { ...proc, zonas: matchingZones } 
+        : null;
+    })
+    .filter(Boolean);
 
   return (
     <div className="animate-slide-in-right">
