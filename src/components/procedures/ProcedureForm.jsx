@@ -196,7 +196,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
 
   return (
     <Modal onClose={onCancel}>
-      <div className="p-6">
+      <div className="p-6" style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '15px' }}>
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           {procedura ? 'Редактиране на процедура' : 'Добавяне на нова процедура'}
         </h2>
