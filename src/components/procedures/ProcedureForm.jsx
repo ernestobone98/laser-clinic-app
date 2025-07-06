@@ -6,17 +6,8 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   // Initialize form data with procedure data if editing, or default values if creating
   const [formData, setFormData] = useState(() => {
     if (procedura) {
-      return {
-        data: procedura.data || new Date().toISOString().split('T')[0],
-        obshta_cena: procedura.obshta_cena || '',
-        id_paciente: procedura.id_paciente || patient?.id || null,
-        zonas: procedura.zonas && procedura.zonas.length > 0 
-          ? procedura.zonas.map(z => ({
-              id_zona: z.id_zona,
-              pulsaciones: z.pulsaciones || ''
-            }))
-          : [{ id_zona: null, pulsaciones: '' }]
-      };
+      console.log('Initializing with procedura:', procedura);
+      return procedura;
     }
     
     return {
@@ -46,14 +37,21 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       const zoneId = zona.id_zona || zona.idZona;
       if (!zoneId) return '';
 
-      // Find the matching zone, handling case sensitivity
+      // First try to find by ID
       const fullZoneData = zonas?.find(z => 
         z.id_zona === zoneId || 
-        z.idZona === zoneId
+        z.idZona === zoneId ||
+        z.id_zona?.toString() === zoneId?.toString() ||
+        z.idZona?.toString() === zoneId?.toString()
       );
 
-      // Try both cases for the name
-      return fullZoneData?.NAZVANIE || fullZoneData?.nazvanie || '';
+      // If found, return the name
+      if (fullZoneData) {
+        return fullZoneData.NAZVANIE || fullZoneData.nazvanie || '';
+      }
+
+      // If not found by ID, try to match by name (as a fallback)
+      return zona.zona || '';
     });
   }, [procedura, zonas]);
 
@@ -161,7 +159,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
     
     setFormData(prev => ({
       ...prev,
-      zonas: newZonas
+      zonas: formData.zonas
     }));
     setSearchTerms(newSearchTerms);
     setShowDropdowns(newShowDropdowns);
