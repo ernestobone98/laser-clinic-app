@@ -67,9 +67,12 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
       <div className="bg-white shadow-lg rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-800">Процедури</h2>
-          <button onClick={onAddProcedure} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
-            <PlusCircle size={20} />
-            Нова процедура
+          <button 
+            onClick={onAddProcedure} 
+            className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-indigo-700 transition-colors w-auto sm:w-auto"
+          >
+            <PlusCircle size={16} className="sm:w-5 sm:h-5 w-4 h-4 flex-shrink-0" />
+            <span className="whitespace-nowrap text-xs sm:text-sm">Нова процедура</span>
           </button>
         </div>
         <div className="mb-4">
@@ -105,7 +108,7 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mt-3 md:mt-0">
-                                    <p className="font-semibold text-lg text-indigo-600 flex items-center gap-2"><DollarSign size={16} /> {proc.obshtaCena.toFixed(2)} лв.</p>
+                  <p className="font-semibold text-lg text-indigo-600 flex items-center gap-2"><DollarSign size={16} /> {proc.obshtaCena.toFixed(2)} лв.</p>
                   <button onClick={() => onEditProcedure(proc)} className="p-2 hover:bg-gray-200 rounded-full"><Edit size={18} /></button>
                   <button onClick={() => onDeleteProcedure(proc.idProcedura)} className="p-2 hover:bg-red-100 rounded-full text-red-500"><Trash2 size={18} /></button>
                 </div>
