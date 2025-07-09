@@ -49,16 +49,23 @@ export const HomePage = ({ patients, loading, onPatientSelect, onAddPatient, sea
               <li
                 key={patient.id}
                 onClick={() => onPatientSelect(patient)}
-                className="cursor-pointer hover:bg-gray-50 transition-colors rounded-lg p-4 flex items-center justify-between"
+                className="cursor-pointer hover:bg-gray-50 transition-colors rounded-lg p-4 flex items-start sm:items-center justify-between gap-2"
               >
-                <div>
-                  <p className="font-bold text-lg text-gray-800">{patient.IME}</p>
-                  <div className="flex gap-2 text-sm text-gray-500">
-                    {patient.EMAIL && <span>{patient.EMAIL}</span>}
-                    {patient.TELEFON && <span>| {patient.TELEFON}</span>}
+                <div className="min-w-0">
+                  <p className="font-bold text-lg text-gray-800 truncate">{patient.IME}</p>
+                  <div className="flex flex-col sm:flex-row sm:gap-2 text-sm text-gray-500 mt-1">
+                    {patient.EMAIL && (
+                      <span className="truncate">{patient.EMAIL}</span>
+                    )}
+                    {patient.EMAIL && patient.TELEFON && (
+                      <span className="hidden sm:inline">|</span>
+                    )}
+                    {patient.TELEFON && (
+                      <span className="truncate">{patient.TELEFON}</span>
+                    )}
                   </div>
                 </div>
-                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                <span className={`px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0 ${
                   patient.POL.trim().toUpperCase().startsWith('H') ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
                 }`}>
                   {patient.POL.trim().toUpperCase().startsWith('H') ? 'Мъж' : 'Жена'}
