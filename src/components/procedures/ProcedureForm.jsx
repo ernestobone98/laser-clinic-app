@@ -148,18 +148,15 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   const removeZoneField = (index) => {
     if (formData.zonas.length <= 1) return;
     
-    const newZonas = [...formData.zonas];
-    newZonas.splice(index, 1);
+    // Create new arrays without the item at the specified index
+    const newZonas = formData.zonas.filter((_, i) => i !== index);
+    const newSearchTerms = searchTerms.filter((_, i) => i !== index);
+    const newShowDropdowns = showDropdowns.filter((_, i) => i !== index);
     
-    const newSearchTerms = [...searchTerms];
-    newSearchTerms.splice(index, 1);
-    
-    const newShowDropdowns = [...showDropdowns];
-    newShowDropdowns.splice(index, 1);
-    
+    // Update all states
     setFormData(prev => ({
       ...prev,
-      zonas: formData.zonas
+      zonas: newZonas
     }));
     setSearchTerms(newSearchTerms);
     setShowDropdowns(newShowDropdowns);
@@ -207,8 +204,8 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
             </label>
             
             {formData.zonas.map((zona, index) => (
-              <div key={index} className="flex space-x-2">
-                <div className="relative flex-1">
+              <div key={index} className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full">
+                <div className="relative w-full">
                   <input
                     type="text"
                     value={searchTerms[index] || ''}
@@ -227,7 +224,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
                       setShowDropdowns(newShowDropdowns);
                     }}
                     placeholder="Изберете зона..."
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 sm:p-2.5 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                   {showDropdowns[index] && (
