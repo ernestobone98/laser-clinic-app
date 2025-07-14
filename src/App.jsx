@@ -97,7 +97,7 @@ export default function App() {
       // Implementation depends on your API
       if (editingItem) {
         // Update existing procedure
-        await api.put(`/api/proceduras/${editingItem.id}`, procedureData);
+        await api.put(`/api/proceduras/${editingItem.idProcedura}`, procedureData);
         showAlert('Процедурата е актуализирана успешно', 'info');
       } else {
         // Create new procedure
