@@ -1,6 +1,7 @@
 // src/components/procedures/ProcedureForm.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Modal } from '../common/Modal';
+import { comment } from 'postcss/lib/postcss';
 
 export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loadingZonas }) => {
   // Initialize form data with procedure data if editing, or default values if creating
@@ -14,6 +15,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       data: new Date().toISOString().split('T')[0],
       obshta_cena: '',
       id_paciente: patient?.id || null,
+      comment: '',
       zonas: [{ id_zona: null, pulsaciones: '' }]
     };
   });
@@ -96,12 +98,12 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
         }));
       }
     } else if (name === 'pulsaciones') {
-      // Update pulsaciones for specific zone
+      // git add  pulsaciones for specific zone
       const newZonas = [...formData.zonas];
       newZonas[index] = { ...newZonas[index], pulsaciones: value };
       
-      // Validate pulsaciones field (only numbers and '/')
-      if (value === '' || /^[0-9/]*$/.test(value)) {
+      // Validate pulsaciones field (only numbers, '/' and '-')
+      if (value === '' || /^[0-9/-]*$/.test(value)) {
         setFormData(prev => ({
           ...prev,
           zonas: newZonas
@@ -182,7 +184,8 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       })),
       obshta_cena: parseFloat(formData.obshta_cena),
       data: formData.data,
-      id_paciente: formData.id_paciente
+      id_paciente: formData.id_paciente,
+      comment: formData.comment || '' // Ensure comment is at least an empty string
     };
     
     console.log('Submitting procedure data:', procedureData);
@@ -319,6 +322,20 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
               value={formData.data}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          {/* Comment Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Коментар
+            </label>
+            <textarea
+              name="comment"
+              value={formData.comment || ''}
+              onChange={handleInputChange}
+              placeholder="Въведете коментар за процедурата..."
+              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-[60px] sm:min-h-[80px] text-sm sm:text-base"
+              rows={3}
             />
           </div>
 
