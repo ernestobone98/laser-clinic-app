@@ -94,7 +94,7 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
           <ul className="space-y-4">
             {filteredProcedures.map(proc => (
               <li key={proc.idProcedura} className="bg-gray-50 rounded-lg p-4 flex flex-col md:flex-row justify-between md:items-center">
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-700 flex items-center gap-2"><Calendar size={16} /> {new Date(proc.data).toLocaleDateString()}</p>
                   <div>
                     <p className="text-gray-600 font-medium mb-1">Зони:</p>
@@ -106,8 +106,16 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
                       ))}
                     </ul>
                   </div>
+                  {proc.comment && proc.comment.trim() !== '' && (
+                    <div className="mt-2">
+                      <p className="text-gray-600 font-medium mb-1">Коментар:</p>
+                      <div className="bg-gray-100 rounded-md p-2 text-sm break-words whitespace-pre-line">
+                        {proc.comment}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-4 mt-3 md:mt-0">
+                <div className="flex items-center gap-4 mt-3 md:mt-0 flex-shrink-0">
                   <p className="font-semibold text-lg text-indigo-600 flex items-center gap-2"><DollarSign size={16} /> {proc.obshtaCena.toFixed(2)} лв.</p>
                   <button onClick={() => onEditProcedure(proc)} className="p-2 hover:bg-gray-200 rounded-full"><Edit size={18} /></button>
                   <button onClick={() => onDeleteProcedure(proc.idProcedura)} className="p-2 hover:bg-red-100 rounded-full text-red-500"><Trash2 size={18} /></button>
