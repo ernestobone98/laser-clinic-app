@@ -18,7 +18,7 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
         pol: patient.POL || 'Ж',
         telefon: patient.TELEFON || '',
         email: patient.EMAIL || '',
-        balance: patient.BALANCE || 0
+        balance: 0
       });
     }
   }, [patient]);
