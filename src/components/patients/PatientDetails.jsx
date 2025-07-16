@@ -56,6 +56,11 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">{patient.IME}</h1>
             <p className="text-gray-500 mt-1">{patient.EMAIL} | {patient.TELEFON}</p>
+            {typeof patient.BALANCE !== 'undefined' && (
+              <p className={`mt-2 text-lg font-semibold ${patient.BALANCE <= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                Баланс: {Number(patient.BALANCE).toFixed(2)} лв.
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-4 md:mt-0">
             <button onClick={() => onEdit(patient)} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"><Edit size={20} /></button>

@@ -7,7 +7,8 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
     ime: '',
     pol: 'Ж',
     telefon: '',
-    email: ''
+    email: '',
+    balance: 0
   });
 
     useEffect(() => {
@@ -16,7 +17,8 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
         ime: patient.IME || '',
         pol: patient.POL || 'Ж',
         telefon: patient.TELEFON || '',
-        email: patient.EMAIL || ''
+        email: patient.EMAIL || '',
+        balance: patient.BALANCE || 0
       });
     }
   }, [patient]);
@@ -81,6 +83,18 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="balance">Баланс</label>
+          <input
+            className="border border-gray-300 p-2 w-full"
+            type="number"
+            id="balance"
+            name="balance"
+            value={formData.balance || 0}
+            onChange={handleChange}
+            step="10"
           />
         </div>
         <button
