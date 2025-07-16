@@ -8,14 +8,17 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   const [formData, setFormData] = useState(() => {
     if (procedura) {
       console.log('Initializing with procedura:', procedura);
-      return procedura;
+      return {
+        ...procedura,
+        is_paid: typeof procedura.is_paid !== 'undefined' ? procedura.is_paid : false
+      };
     }
-    
     return {
       data: new Date().toISOString().split('T')[0],
       obshta_cena: '',
       id_paciente: patient?.id || null,
       comment: '',
+      is_paid: false,
       zonas: [{ id_zona: null, pulsaciones: '' }]
     };
   });
@@ -87,8 +90,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   };
 
   const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    
+    const { name, value, type, checked } = e.target;
     if (name === 'obshta_cena') {
       // Validate price field (only numbers and one decimal point)
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -98,10 +100,9 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
         }));
       }
     } else if (name === 'pulsaciones') {
-      // git add  pulsaciones for specific zone
+      // Update pulsaciones for specific zone
       const newZonas = [...formData.zonas];
       newZonas[index] = { ...newZonas[index], pulsaciones: value };
-      
       // Validate pulsaciones field (only numbers, '/' and '-')
       if (value === '' || /^[0-9/-]*$/.test(value)) {
         setFormData(prev => ({
@@ -109,6 +110,11 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
           zonas: newZonas
         }));
       }
+    } else if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -180,12 +186,13 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
     const procedureData = {
       zonas: formData.zonas.map(zona => ({
         id_zona: zona.id_zona,
-        pulsaciones: zona.pulsaciones || '' // Ensure pulsaciones is at least an empty string
+        pulsaciones: zona.pulsaciones || ''
       })),
       obshta_cena: parseFloat(formData.obshta_cena),
       data: formData.data,
       id_paciente: formData.id_paciente,
-      comment: formData.comment || '' // Ensure comment is at least an empty string
+      comment: formData.comment || '',
+      is_paid: !!formData.is_paid
     };
     
     console.log('Submitting procedure data:', procedureData);
@@ -337,6 +344,21 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
               className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-[60px] sm:min-h-[80px] text-sm sm:text-base"
               rows={3}
             />
+          </div>
+
+          {/* Paid Checkbox at the bottom */}
+          <div className="flex items-center mt-2">
+            <input
+              type="checkbox"
+              id="is_paid"
+              name="is_paid"
+              checked={!!formData.is_paid}
+              onChange={handleInputChange}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <label htmlFor="is_paid" className="ml-2 text-sm font-medium text-gray-700 select-none">
+              Платена веднага
+            </label>
           </div>
 
           <div className="flex justify-end space-x-3 mt-6">
