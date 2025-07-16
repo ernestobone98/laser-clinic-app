@@ -60,8 +60,11 @@ export default function App() {
         }
       } else {
         // Create new patient
-        await api.post('/api/pacientes', patientData);
+        const createdPatient = await api.post('/api/pacientes', patientData);
         showAlert('Пациентът е добавен успешно', 'success');
+        // navigate to the new patient's details with full backend data
+        setCurrentView('details');
+        setSelectedPatient(createdPatient);
       }
       forceDataRefresh();
     } catch (error) {
@@ -108,6 +111,11 @@ export default function App() {
         // Create new procedure
         await api.post('/api/proceduras', procedureData);
         showAlert('Процедурата е добавена успешно', 'success');
+        // Refresh patient data after new procedure (in case balance or other info changes)
+        if (selectedPatient && selectedPatient.id) {
+          const freshPatient = await api.get(`/api/pacientes/${selectedPatient.id}`);
+          setSelectedPatient(freshPatient);
+        }
       }
       forceDataRefresh();
     } catch (error) {
@@ -142,7 +150,6 @@ export default function App() {
       // Use itemToDelete directly since it's already the procedure ID
       await api.delete(`/api/proceduras/${itemToDelete}`);
       showAlert('Процедурата е изтрита успешно', 'success');
-      handleBackToHome();
       forceDataRefresh();
     } catch (error) {
       showAlert(`Грешка при изтриване на процедура: ${error.message}`, 'error');
