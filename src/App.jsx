@@ -53,6 +53,11 @@ export default function App() {
         // Update existing patient
         await api.put(`/api/pacientes/${editingItem.id}`, patientData);
         showAlert('Пациентът е актуализиран успешно', 'info');
+        // Fetch the latest patient data and update selectedPatient if needed
+        if (selectedPatient && editingItem.id === selectedPatient.id) {
+          const freshPatient = await api.get(`/api/pacientes/${selectedPatient.id}`);
+          setSelectedPatient(freshPatient);
+        }
       } else {
         // Create new patient
         await api.post('/api/pacientes', patientData);
