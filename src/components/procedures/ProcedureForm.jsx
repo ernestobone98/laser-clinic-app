@@ -86,7 +86,11 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
 
   const handleZonaSelect = (zonaItem, index) => {
     const newZonas = [...formData.zonas];
-    newZonas[index] = { ...newZonas[index], id_zona: zonaItem.idZona };
+    newZonas[index] = {
+      ...newZonas[index],
+      id_zona: zonaItem.idZona,
+      pulsaciones: zonaItem.meanPulsaciones ?? '' // Set meanPulsaciones if available
+    };
     setFormData(prev => ({ ...prev, zonas: newZonas }));
 
     const newSearchTerms = [...searchTerms];
