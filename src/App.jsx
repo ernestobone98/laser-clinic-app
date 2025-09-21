@@ -195,6 +195,16 @@ export default function App() {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-900">
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <img
+            className="h-8 w-auto cursor-pointer"
+            src="/latelier_logo.png"
+            alt="L'Atelier Logo"
+            onClick={() => setCurrentView('home')}
+          />
+        </div>
+      </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {alertInfo.show && (
           <CustomAlert
