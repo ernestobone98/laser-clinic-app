@@ -25,12 +25,18 @@ RUN apk add --no-cache gettext
 # Copy the built app from the build stage to nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration and substitute variables
+# Copy nginx configuration template
 COPY nginx.conf /tmp/nginx.conf
-RUN envsubst '${SERVER_NAME} ${PROXY_PASS}' < /tmp/nginx.conf > /etc/nginx/conf.d/default.conf
+
+# Create a startup script to substitute variables at runtime
+RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
+    echo 'envsubst "${SERVER_NAME} ${PROXY_PASS}" < /tmp/nginx.conf > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo 'exec "$@"' >> /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
 
 # Expose port 80
 EXPOSE 80
 
-# Start nginx
+# Use the custom entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
