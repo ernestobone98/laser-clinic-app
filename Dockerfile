@@ -22,6 +22,10 @@ FROM nginx:stable-alpine
 # Install envsubst (for variable substitution)
 RUN apk add --no-cache gettext
 
+# Set default environment variables (can be overridden at runtime)
+ENV SERVER_NAME=localhost
+ENV PROXY_PASS=http://localhost:8080
+
 # Copy the built app from the build stage to nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
