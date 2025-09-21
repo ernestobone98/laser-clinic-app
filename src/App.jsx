@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from './api';
 import { useZonas, usePatients } from "./hooks";
 import { CustomAlert } from "./components/common/CustomAlert";
@@ -7,12 +7,26 @@ import { PatientForm } from "./components/patients/PatientForm";
 import { HomePage } from "./components/patients/HomePage";
 import { PatientDetails } from "./components/patients/PatientDetails";
 import { ProcedureForm } from "./components/procedures/ProcedureForm";
+import Login from "./components/auth/Login";
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = api.getToken();
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
   const { zonas, loading: loadingZonas } = useZonas();
   const [dataVersion, setDataVersion] = useState(0);
   const { patients, loading: loadingPatients } = usePatients(dataVersion);
-  
+
   // --- State Management ---
   const [currentView, setCurrentView] = useState('home');
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -158,6 +172,10 @@ export default function App() {
     }
   };
 
+  if (!isLoggedIn) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
   // console.log("Zonas loading:", loadingZonas, "Zonas:", zonas);
   // console.log("Patients loading:", loadingPatients, "Patients:", patients);
 
@@ -179,13 +197,13 @@ export default function App() {
     <div className="bg-gray-50 min-h-screen font-sans text-gray-900">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {alertInfo.show && (
-          <CustomAlert 
-            message={alertInfo.message} 
-            type={alertInfo.type} 
-            onClose={() => setAlertInfo(prev => ({...prev, show: false}))} 
+          <CustomAlert
+            message={alertInfo.message}
+            type={alertInfo.type}
+            onClose={() => setAlertInfo(prev => ({...prev, show: false}))}
           />
         )}
-        
+
         {currentView === 'home' ? (
           <HomePage
             patients={patients}
@@ -216,7 +234,7 @@ export default function App() {
             onCancel={closeModal}
           />
         )}
-        
+
         {modal === 'procedureForm' && (
           <ProcedureForm
             procedura={editingItem}
@@ -227,7 +245,7 @@ export default function App() {
             loadingZonas={loadingZonas}
           />
         )}
-        
+
         {/* Confirmation Dialogs */}
         {modal === 'confirmDeletePatient' && (
           <ConfirmationDialog
@@ -237,7 +255,7 @@ export default function App() {
             onCancel={closeModal}
           />
         )}
-        
+
         {modal === 'confirmDeleteProcedure' && (
           <ConfirmationDialog
             title="Изтриване на процедура"
