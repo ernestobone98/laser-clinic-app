@@ -7,8 +7,7 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
     ime: '',
     pol: 'Ж',
     telefon: '',
-    email: '',
-    balance: 0
+    email: ''
   });
 
     useEffect(() => {
@@ -17,8 +16,7 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
         ime: patient.IME || '',
         pol: patient.POL || 'Ж',
         telefon: patient.TELEFON || '',
-        email: patient.EMAIL || '',
-        balance: 0
+        email: patient.EMAIL || ''
       });
     }
   }, [patient]);
@@ -35,12 +33,12 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
 
   return (
     <Modal onClose={onCancel}>
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">{patient ? 'Редактиране на пациент' : 'Добавяне на нов пациент'}</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6">{patient ? 'Редактиране на пациент' : 'Добавяне на нов пациент'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="ime">Име</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="ime">Име</label>
           <input
-            className="border border-gray-300 p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             type="text"
             id="ime"
             name="ime"
@@ -50,9 +48,9 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="pol">Пол</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="pol">Пол</label>
           <select
-            className="border border-gray-300 p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             id="pol"
             name="pol"
             value={formData.pol}
@@ -64,9 +62,9 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="telefon">Телефон</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="telefon">Телефон</label>
           <input
-            className="border border-gray-300 p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             type="tel"
             id="telefon"
             name="telefon"
@@ -75,9 +73,9 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="email">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">Email</label>
           <input
-            className="border border-gray-300 p-2 w-full"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             type="email"
             id="email"
             name="email"
@@ -85,25 +83,22 @@ export const PatientForm = ({ patient, onSave, onCancel }) => {
             onChange={handleChange}
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2" htmlFor="balance">Баланс</label>
-          <input
-            className="border border-gray-300 p-2 w-full"
-            type="number"
-            id="balance"
-            name="balance"
-            value={formData.balance || 0}
-            onChange={handleChange}
-            step="10"
-          />
+        <div className="flex justify-end space-x-3 pt-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+          >
+            Отказ
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            type="submit"
+            disabled={!formData.ime}
+          >
+            {patient ? 'Запази промените' : 'Добави пациента'}
+          </button>
         </div>
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-          type="submit"
-          disabled={!formData.ime}
-        >
-          {patient ? 'Запази промените' : 'Добави пациента'}
-        </button>
       </form>
     </Modal>
   );

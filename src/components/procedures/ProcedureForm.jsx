@@ -9,7 +9,6 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
     obshta_cena: '',
     id_paciente: patient?.id || null,
     comment: '',
-    is_paid: false,
     zonas: [{ id_zona: null, pulsaciones: '' }]
   });
 
@@ -45,7 +44,6 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
         obshta_cena: procedura.obshtaCena || '',
         id_paciente: procedura.idPaciente,
         comment: procedura.comment || '',
-        is_paid: !!procedura.isPaid,
         zonas: procedureZonas.map(({ id_zona, pulsaciones }) => ({ id_zona, pulsaciones }))
       });
       
@@ -114,10 +112,10 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   const handleSubmit = (e) => {
     e.preventDefault();
     const isPriceValid = formData.obshta_cena && !isNaN(parseFloat(formData.obshta_cena));
-    const areZonasValid = formData.zonas.every(z => z.id_zona !== null && z.id_zona !== undefined);
-    
+    const areZonasValid = formData.zonas.every(z => z.id_zona !== null && z.id_zona !== undefined && z.pulsaciones && z.pulsaciones.trim() !== '');
+
     if (!isPriceValid || !areZonasValid) {
-      alert('Моля, попълнете всички задължителни полета (зони и цена).');
+      alert('Моля, попълнете всички задължителни полета (зони, пулсации и цена).');
       return;
     }
     
@@ -127,7 +125,6 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       obshta_cena: parseFloat(formData.obshta_cena),
       id_paciente: formData.id_paciente,
       comment: formData.comment,
-      is_paid: formData.is_paid,
       zonas: formData.zonas,
     });
   };
@@ -135,8 +132,8 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
 
   return (
     <Modal onClose={onCancel}>
-       <div className="p-6" style={{ maxHeight: '80vh', overflowY: 'auto', paddingRight: '15px' }}>
-         <h2 className="text-3xl font-bold text-gray-800 mb-6">
+       <div className="p-6" style={{ maxHeight: '80vh', overflowY: 'auto', paddingRight: '40px' }}>
+         <h2 className="text-2xl font-semibold text-gray-900 mb-6">
            {procedura ? 'Редактиране на процедура' : 'Добавяне на нова процедура'}
          </h2>
         
@@ -279,19 +276,6 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
              />
            </div>
 
-           <div className="flex items-center mt-2">
-             <input
-               type="checkbox"
-               id="is_paid"
-               name="is_paid"
-               checked={formData.is_paid}
-               onChange={handleInputChange}
-               className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-             />
-             <label htmlFor="is_paid" className="ml-2 text-sm font-medium text-gray-700 select-none">
-               Платена веднага
-             </label>
-           </div>
 
            <div className="flex justify-end space-x-3 pt-4">
              <button

@@ -23,6 +23,18 @@ export default function App() {
     setIsLoggedIn(true);
   };
 
+  const handleLogout = () => {
+    api.setToken(null);
+    setIsLoggedIn(false);
+    setCurrentView('home');
+    setSelectedPatient(null);
+    setModal(null);
+    setEditingItem(null);
+    setItemToDelete(null);
+    setAlertInfo({ show: false, message: '', type: 'info' });
+    setSearchTerm('');
+  };
+
   const { zonas, loading: loadingZonas } = useZonas();
   const [dataVersion, setDataVersion] = useState(0);
   const { patients, loading: loadingPatients } = usePatients(dataVersion);
@@ -197,12 +209,20 @@ export default function App() {
     <div className="bg-gray-50 min-h-screen font-sans text-gray-900">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <img
-            className="h-8 w-auto cursor-pointer"
-            src="/latelier_logo.png"
-            alt="L'Atelier Logo"
-            onClick={() => setCurrentView('home')}
-          />
+          <div className="flex justify-between items-center">
+            <img
+              className="h-16 w-auto cursor-pointer"
+              src="/latelier_logo.png"
+              alt="L'Atelier Logo"
+              onClick={() => setCurrentView('home')}
+            />
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
