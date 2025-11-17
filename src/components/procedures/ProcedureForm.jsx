@@ -20,13 +20,13 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
   // It runs ONLY when the necessary data (procedura to edit and the full zonas list) is available.
   useEffect(() => {
     // We proceed only if we are editing a procedure AND the full list of zones has loaded.
-    if (procedura && zonas && zonas.length > 0) {
+    if (procedura && zonas && zonas.length > 0 && !loadingZonas) {
       
       // We map over the zones from the procedure we are editing...
       const procedureZonas = procedura.zonas.map(procZona => {
         // THE FIX: Find the full zone details from the master list BY NAME.
         // `procZona.zona` comes from the API response you provided.
-        // `z.nazvanie` is the name property in the master 'zonas' list.
+        // `z.NAZVANIE` is the name property in the master 'zonas' list.
         const fullZone = zonas.find(z => z.NAZVANIE === procZona.zona);
         
         return {
@@ -41,8 +41,8 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       // Now, we update the state once with all the correct data.
       setFormData({
         data: new Date(procedura.data).toISOString().split('T')[0],
-        obshta_cena: procedura.obshtaCena || '',
-        id_paciente: procedura.idPaciente,
+        obshta_cena: procedura.obshta_cena || procedura.obshtaCena || '',
+        id_paciente: procedura.id_paciente || procedura.idPaciente || patient?.id || null,
         comment: procedura.comment || '',
         zonas: procedureZonas.map(({ id_zona, pulsaciones }) => ({ id_zona, pulsaciones }))
       });
@@ -51,7 +51,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
       setSearchTerms(procedureZonas.map(z => z.searchName));
       setShowDropdowns(procedureZonas.map(() => false));
     }
-  }, [procedura, zonas]); // This effect depends on 'procedura' and 'zonas'.
+  }, [procedura, zonas, loadingZonas]); // This effect depends on 'procedura', 'zonas', and 'loadingZonas'.
 
 
   // --- Handler Functions ---
@@ -111,22 +111,34 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Don't submit if zones are still loading
+    if (loadingZonas) {
+      alert('Моля, изчакайте зареждането на зоните.');
+      return;
+    }
+
     const isPriceValid = formData.obshta_cena && !isNaN(parseFloat(formData.obshta_cena));
     const areZonasValid = formData.zonas.every(z => z.id_zona !== null && z.id_zona !== undefined && z.pulsaciones && z.pulsaciones.trim() !== '');
+
+    console.log('Form validation:', { isPriceValid, areZonasValid, formData });
 
     if (!isPriceValid || !areZonasValid) {
       alert('Моля, попълнете всички задължителни полета (зони, пулсации и цена).');
       return;
     }
     
-    onSave({
+    const dataToSave = {
       // Pass only the necessary data for the API
       data: formData.data,
       obshta_cena: parseFloat(formData.obshta_cena),
       id_paciente: formData.id_paciente,
       comment: formData.comment,
       zonas: formData.zonas,
-    });
+    };
+    
+    console.log('Submitting procedure data:', dataToSave);
+    onSave(dataToSave);
   };
 
 
@@ -186,7 +198,7 @@ export const ProcedureForm = ({ procedura, patient, onSave, onCancel, zonas, loa
                              className="p-2 hover:bg-gray-100 cursor-pointer"
                              onMouseDown={() => handleZonaSelect(zonaItem, index)}
                            >
-                             {zonaItem.NAZVANIE} {zonaItem.nazvanieEs && `(${zonaItem.nazvanieEs})`}
+                             {zonaItem.NAZVANIE}
                            </div>
                          ))
                        ) : (

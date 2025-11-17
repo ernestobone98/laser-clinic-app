@@ -128,13 +128,13 @@ export default function App() {
   // --- Procedure CRUD ---
   const handleSaveProcedure = async (procedureData) => {
     try {
-      // Implementation depends on your API
-      if (editingItem) {
+      // Check if we're editing an existing procedure by looking for idProcedura
+      if (editingItem?.idProcedura) {
         // Update existing procedure
         await api.put(`/api/proceduras/${editingItem.idProcedura}`, procedureData);
         showAlert('Процедурата е актуализирана успешно', 'info');
       } else {
-        // Create new procedure
+        // Create new procedure (including duplicates)
         await api.post('/api/proceduras', procedureData);
         showAlert('Процедурата е добавена успешно', 'success');
         // Refresh patient data after new procedure (in case balance or other info changes)
@@ -273,6 +273,7 @@ export default function App() {
             onCancel={closeModal}
             zonas={zonas}
             loadingZonas={loadingZonas}
+            isEditing={editingItem?.idProcedura ? true : false}
           />
         )}
 

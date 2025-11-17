@@ -54,7 +54,7 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
       if (!zoneExists && editValue) {
         // We need to get the zone ID from the backend
         const zonesResponse = await api.get('/api/proceduras/zonas');
-        const zoneData = zonesResponse.find(z => z.nazvanie === editingCell.zoneName);
+        const zoneData = zonesResponse.find(z => z.NAZVANIE === editingCell.zoneName);
         if (zoneData) {
           updatedZonas.push({
             zona: editingCell.zoneName,
@@ -146,13 +146,23 @@ export const PatientDetails = ({ patient, onBack, onEdit, onDelete, onAddProcedu
             {procedures.length > 0 && (
               <button
                 onClick={() => {
-                  const lastProcedure = procedures[procedures.length - 1];
+                  const lastProcedure = procedures[0];
+                  console.log('Duplicating procedure:', lastProcedure);
+                  
+                  // Create a new procedure based on the last one
+                  // IMPORTANT: Remove idProcedura so it's treated as a new procedure
+                  const { idProcedura, ...procedureWithoutId } = lastProcedure;
+                  
                   const formattedProcedure = {
-                    ...lastProcedure,
                     data: new Date().toISOString().split('T')[0], // Set to today
-                    zonas: lastProcedure.zonas || [],
-                    obshta_cena: lastProcedure.obshta_cena || lastProcedure.obshtaCena || '',
+                    obshta_cena: lastProcedure.obshtaCena,
+                    obshtaCena: lastProcedure.obshtaCena, // Include both formats for compatibility
+                    id_paciente: lastProcedure.idPaciente,
+                    idPaciente: lastProcedure.idPaciente, // Include both formats for compatibility
+                    comment: lastProcedure.comment || '',
+                    zonas: lastProcedure.zonas, // Keep the original zones structure
                   };
+                  console.log('Formatted procedure for duplication:', formattedProcedure);
                   onEditProcedure(formattedProcedure);
                 }}
                 className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-green-600 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-green-700 transition-colors w-auto sm:w-auto"

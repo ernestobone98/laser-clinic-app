@@ -10,7 +10,7 @@ export const useZonas = () => {
   const fetchZonas = useCallback(async () => {
     try {
       setLoading(true);
-      const zonasData = await api.get('/api/zonas');
+      const zonasData = await api.get('/api/proceduras/zonas');
       setZonas(zonasData.map(z => ({ ...z, id: z.idZona })));
       setError(null);
     } catch (err) {
